@@ -12,7 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.darkabhi.chatnode.config.AppConfig.SERVER_PATH
 import com.darkabhi.chatnode.databinding.ActivityChatBinding
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 
@@ -62,9 +66,11 @@ class ChatActivity : AppCompatActivity() {
             runOnUiThread {
                 try {
                     val jsonObject = JSONObject(text)
-                    jsonObject.put("isSent", false)
-                    chatAdapter.submitItem(jsonObject)
-                    binding.chatRv.smoothScrollToPosition(chatAdapter.itemCount - 1)
+                    if (jsonObject.getString("name") != name) {
+                        jsonObject.put("isSent", false)
+                        chatAdapter.submitItem(jsonObject)
+                        binding.chatRv.smoothScrollToPosition(chatAdapter.itemCount - 1)
+                    }
                 } catch (e: Exception) {
                     Log.e("ERROR", e.toString())
                 }
